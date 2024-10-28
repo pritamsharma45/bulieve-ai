@@ -148,7 +148,6 @@ export async function createPost(
     }
     throw e;
   }
-  return redirect(`/post/${data.id}`);
 }
 
 export async function handleVote(formData: FormData) {
