@@ -4,6 +4,11 @@ import "./globals.css";
 import { Navbar } from "./components/Navbar";
 import { ThemeProvider } from "./components/theme-provider";
 import { Toaster } from "@/components/ui/toaster";
+import { SidebarProvider, SidebarTrigger,SidebarInset } from "@/components/ui/sidebar"
+import { AppSidebar } from "@/app/components/app-sidebar"
+import { SidebarLeft } from "@/app/components/SidebarLeft"
+import { SidebarRight } from "@/app/components/SidebarRight"
+ 
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -26,12 +31,20 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <Navbar />
-          {children}
-
-          <Toaster />
+          <SidebarProvider>
+          <SidebarLeft />
+          <SidebarInset>
+          <div className="flex flex-1 flex-col gap-4 p-4">
+         {children}
+        </div>
+          </SidebarInset>
+          <SidebarRight />
+        </SidebarProvider>
         </ThemeProvider>
       </body>
     </html>
   );
 }
+
+
+
