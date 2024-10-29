@@ -87,7 +87,7 @@ export default async function SubRedditRoute({
             </div>
 
             <h2 className="mt-6 text-xl font-semibold">
-              No post have been created
+              No post have been created yet
             </h2>
           </div>
         ) : (
