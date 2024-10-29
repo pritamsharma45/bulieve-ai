@@ -13,6 +13,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { unstable_noStore as noStore } from "next/cache";
+import BackButton from "@/app/components/BackButton";
 
 async function getData(id: string) {
   noStore();
@@ -73,7 +74,13 @@ export default async function PostPage({ params }: { params: { id: string } }) {
   const data = await getData(params.id);
 
   return (
+<div>
+
+<Link href="/">
+    <BackButton />
+</Link>
     <div className="max-w-[1200px] mx-auto flex gap-x-10 mt-4 mb-10">
+
       <div className="w-[70%] flex flex-col gap-y-5">
         <Card className="p-2 flex">
           <div className="flex flex-col  items-center  gap-y-2  p-2">
@@ -198,7 +205,47 @@ export default async function PostPage({ params }: { params: { id: string } }) {
             </Button>
           </div>
         </Card>
+        <Card>
+          <div className="bg-muted p-4 font-semibold">About Community</div>
+          <div className="p-4">
+            <div className="flex items-center gap-x-3">
+              <Image
+                src={`https://avatar.vercel.sh/${data?.subName}`}
+                alt="Image of subreddit"
+                width={60}
+                height={60}
+                className="rounded-full h-16 w-16"
+              />
+              <Link href={`/r/${data?.subName}`} className="font-medium">
+                r/{data?.subName}
+              </Link>
+            </div>
+
+            <p className="text-sm font-normal text-secondary-foreground mt-2">
+              {data?.Subreddit?.description}
+            </p>
+
+            <div className="flex items-center gap-x-2 mt-4">
+              <Cake className="h-5 w-5 text-muted-foreground" />
+              <p className="text-muted-foreground font-medium text-sm">
+                Created:{" "}
+                {new Date(data?.createdAt as Date).toLocaleDateString("en-us", {
+                  weekday: "long",
+                  year: "numeric",
+                  month: "short",
+                  day: "numeric",
+                })}
+              </p>
+            </div>
+
+            <Separator className="my-5" />
+            <Button asChild className="rounded-full w-full">
+              <Link href={`/r/${data?.subName}/create`}>Create Post</Link>
+            </Button>
+          </div>
+        </Card>
       </div>
     </div>
+</div>
   );
 }

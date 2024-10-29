@@ -6,6 +6,7 @@ import prisma from "./lib/db";
 import { Prisma, TypeOfVote } from "@prisma/client";
 import { JSONContent } from "@tiptap/react";
 import { revalidatePath } from "next/cache";
+import slugify from "react-slugify";
 
 export async function updateUsername(prevState: any, formData: FormData) {
   const { getUser } = getKindeServerSession();
@@ -64,6 +65,54 @@ export async function createCommunity(prevState: any, formData: FormData) {
     });
 
     return redirect(`/r/${data.name}`);
+  } catch (e) {
+    if (e instanceof Prisma.PrismaClientKnownRequestError) {
+      if (e.code === "P2002") {
+        return {
+          message: "This Name is alredy used",
+          status: "error",
+        };
+      }
+    }
+    throw e;
+  }
+}
+
+// model Community {
+//   id          String   @id @default(uuid())
+//   name        String   @unique
+//   slug        String   @unique
+//   description String?
+//   createdAt   DateTime @default(now())
+//   updatedAt   DateTime @updatedAt
+//   User        User?    @relation(fields: [userId], references: [id])
+//   userId      String?
+//   posts       Post[]
+// }
+
+// createCommunity2 using above model
+export async function createCommunity2(prevState: any, formData: FormData) {
+  const { getUser } = getKindeServerSession();
+  const user = await getUser();
+
+  if (!user) {
+    return redirect("/api/auth/login");
+  }
+
+  try {
+    const name = formData.get("name") as string;
+    const description = formData.get("description") as string;
+
+    const data = await prisma.community.create({
+      data: {
+        name: name,
+        slug: slugify(name),
+        description: description,
+        userId: user.id,
+      },
+    });
+
+    return redirect(`/stock-arena/${data.slug}`);
   } catch (e) {
     if (e instanceof Prisma.PrismaClientKnownRequestError) {
       if (e.code === "P2002") {
@@ -137,6 +186,49 @@ export async function createPost(
     });
 
     return redirect(`/post/${data.id}`);
+  } catch (e) {
+    if (e instanceof Prisma.PrismaClientKnownRequestError) {
+      if (e.code === "P2002") {
+        return {
+          message: "Invalid subName",
+          status: "error",
+        };
+      }
+    }
+    throw e;
+  }
+}
+export async function createPost2(
+  { jsonContent }: { jsonContent: JSONContent | null },
+  formData: FormData
+) {
+  const { getUser } = getKindeServerSession();
+  const user = await getUser();
+
+  if (!user) {
+    return redirect("/api/auth/login");
+  }
+  console.log("createPost2");
+  const title = formData.get("title") as string;
+  const imageUrl = formData.get("imageUrl") as string | null;
+  const communitySlug = formData.get("communitySlug") as string;
+  console.log("createPost2", title, imageUrl, communitySlug);
+  try {
+    const data = await prisma.post.create({
+      data: {
+        title: title,
+        imageString: imageUrl ?? undefined,
+        communitySlug: communitySlug || null,
+        userId: user.id,
+        textContent: jsonContent ?? undefined,
+      },
+    });
+    // make sure to redirect to the stock-arena/communitySlug if communitySlug is not null\
+    if (communitySlug) {
+      return redirect(`/stock-arena/${data.communitySlug}`);
+    }
+
+    return redirect(`/stock-arena`);
   } catch (e) {
     if (e instanceof Prisma.PrismaClientKnownRequestError) {
       if (e.code === "P2002") {

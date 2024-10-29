@@ -12,7 +12,6 @@ interface iAppProps {
   title: string;
   jsonContent: any;
   id: string;
-  subName: string;
   userName: string;
   imageString: string | null;
   voteCount: number;
@@ -23,7 +22,6 @@ export function PostCard({
   id,
   imageString,
   jsonContent,
-  subName,
   title,
   userName,
   voteCount,
@@ -47,9 +45,9 @@ export function PostCard({
 
       <div>
         <div className="flex items-center gap-x-2 p-2">
-          <Link className="font-semibold text-xs" href={`/r/${subName}`}>
+          {/* <Link className="font-semibold text-xs" href={`/r/${subName}`}>
             r/{subName}
-          </Link>
+          </Link> */}
           <p className="text-xs text-muted-foreground">
             Posted by: <span className="hover:text-primary">u/{userName}</span>
           </p>
@@ -61,7 +59,18 @@ export function PostCard({
           </Link>
         </div>
 
-        <div className="max-h-[300px] overflow-hidden">
+      <div className="max-h-[300px] overflow-hidden">
+          {imageString && (
+            <Image
+              src={imageString}
+              alt="Post Image"
+              width={600}
+              height={300}
+              className="w-full h-full"
+            />
+          ) }
+        </div> 
+        {/* <div className="max-h-[300px] overflow-hidden">
           {imageString ? (
             <Image
               src={imageString}
@@ -73,7 +82,7 @@ export function PostCard({
           ) : (
             <RenderToJson data={jsonContent} />
           )}
-        </div>
+        </div> */}
 
         <div className="m-3 flex items-center gap-x-5">
           <div className="flex items-center gap-x-1">

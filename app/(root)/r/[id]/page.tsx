@@ -97,7 +97,6 @@ export default async function SubRedditRoute({
                 key={post.id}
                 id={post.id}
                 imageString={post.imageString}
-                subName={data.name}
                 commentAmount={post.Comment.length}
                 title={post.title}
                 userName={post.User?.userName as string}

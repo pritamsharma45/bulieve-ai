@@ -2,7 +2,7 @@
 
 import { Card, CardFooter, CardHeader } from "@/components/ui/card";
 import Image from "next/image";
-import pfp from "../../../../public/pfp.png";
+import pfp from "@/public/pfp.png";
 import { Separator } from "@/components/ui/separator";
 import Link from "next/link";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -13,31 +13,9 @@ import { TipTapEditor } from "@/app/components/TipTabEditor";
 import { SubmitButton } from "@/app/components/SubmitButtons";
 import { UploadDropzone } from "@/app/components/Uploadthing";
 import { useState } from "react";
-import { createPost } from "@/app/actions";
+import { createPost2 } from "@/app/actions";
 import { JSONContent } from "@tiptap/react";
 
-const rules = [
-  {
-    id: 1,
-    text: "Remember the human",
-  },
-  {
-    id: 2,
-    text: "Behave like you would in real life",
-  },
-  {
-    id: 3,
-    text: "Look for the original source of content",
-  },
-  {
-    id: 4,
-    text: "Search for duplication before posting",
-  },
-  {
-    id: 5,
-    text: "Read the community guidlines",
-  },
-];
 
 export default function CreatePostRoute({
   params,
@@ -48,10 +26,10 @@ export default function CreatePostRoute({
   const [json, setJson] = useState<null | JSONContent>(null);
   const [title, setTitle] = useState<null | string>(null);
 
-  const createPostReddit = createPost.bind(null, { jsonContent: json });
+  const createPostReddit = createPost2.bind(null, { jsonContent: json });
   return (
     <div className="max-w-[1000px] mx-auto flex gap-x-10 mt-4">
-      <div className="w-[65%] flex flex-col gap-y-5">
+      <div className="flex flex-col gap-y-5">
         <h1 className="font-semibold">
           Subreddit:{" "}
           <Link href={`/r/${params.id}`} className="text-primary">
@@ -76,7 +54,7 @@ export default function CreatePostRoute({
                   name="imageUrl"
                   value={imageUrl ?? undefined}
                 />
-                <input type="hidden" name="subName" value={params.id} />
+                <input type="hidden" name="communitySlug" value={params.id} />
                 <CardHeader>
                   <Label>Title</Label>
                   <Input
@@ -123,7 +101,7 @@ export default function CreatePostRoute({
           </TabsContent>
         </Tabs>
       </div>
-      <div className="w-[35%]">
+      {/* <div className="w-[35%]">
         <Card className="flex flex-col p-4">
           <div className="flex items-center gap-x-2">
             <Image className="h-10 w-10" src={pfp} alt="pfp" />
@@ -142,7 +120,7 @@ export default function CreatePostRoute({
             ))}
           </div>
         </Card>
-      </div>
+      </div> */}
     </div>
   );
 }

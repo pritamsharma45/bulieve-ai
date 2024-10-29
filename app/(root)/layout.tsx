@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-import "./globals.css";
-import { Navbar } from "./components/Navbar";
-import { ThemeProvider } from "./components/theme-provider";
+import "@/app/globals.css";
+import { Navbar } from "@/app/components/Navbar";
+import { ThemeProvider } from "@/app/components/theme-provider";
 import { Toaster } from "@/components/ui/toaster";
 import { SidebarProvider, SidebarTrigger,SidebarInset } from "@/components/ui/sidebar"
 import { AppSidebar } from "@/app/components/app-sidebar"
@@ -38,7 +38,7 @@ export default function RootLayout({
          {children}
         </div>
           </SidebarInset>
-          <SidebarRight />
+          {/* <SidebarRight /> */}
         </SidebarProvider>
         </ThemeProvider>
       </body>
