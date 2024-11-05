@@ -142,7 +142,7 @@ export default async function StockArenaRoute({
   {/* Post Feed */}
   <div className="w-3/4">
     {data.map((post) => (
-      <div className=" mb-4">
+      <div className=" mb-4"  key={post.id}>
          <PostCard
         id={post.id}
         imageString={post.imageString}
