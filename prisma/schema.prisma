@@ -15,35 +15,50 @@ datasource db {
 }
 
 model User {
-  id                 String      @id
-  email              String
-  firstName          String
-  lastName           String
-  imageUrl           String?
-  userName           String?     @unique
-  createdSubreddits  Subreddit[]
-  createdCommunities Community[]
-  createdAt          DateTime    @default(now())
-  Vote               Vote[]
-  Comment            Comment[]
-  posts              Post[]
+  id                String       @id
+  email             String
+  firstName         String
+  lastName          String
+  imageUrl          String?
+  userName          String?      @unique
+  createdSubreddits Subreddit[]
+  communities       Community[]  @relation("CommunityUsers")
+  createdAt         DateTime     @default(now())
+  Vote              Vote[]
+  Comment           Comment[]
+  posts             Post[]
+  Like              Like[]
+  Membership        Membership[]
+}
+
+model Community {
+  id          String       @id @default(uuid())
+  name        String       @unique
+  slug        String       @unique
+  description String?
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  users       User[]       @relation("CommunityUsers")
+  userId      String?
+  posts       Post[]
+  Membership  Membership[]
+}
+
+model Membership {
+  id          String   @id @default(uuid())
+  userId      String
+  communityId String
+  createdAt   DateTime @default(now())
+
+  user      User      @relation(fields: [userId], references: [id])
+  community Community @relation(fields: [communityId], references: [id])
+
+  @@unique([userId, communityId]) // Ensure unique user-community pairs
 }
 
 model Subreddit {
   id          String   @id @default(uuid())
   name        String   @unique
-  description String?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  User        User?    @relation(fields: [userId], references: [id])
-  userId      String?
-  posts       Post[]
-}
-
-model Community {
-  id          String   @id @default(uuid())
-  name        String   @unique
-  slug        String   @unique
   description String?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
@@ -69,6 +84,8 @@ model Post {
   userId        String?
   Community     Community? @relation(fields: [communitySlug], references: [slug])
   communitySlug String?
+
+  Like Like[]
 }
 
 enum TypeOfVote {
@@ -96,4 +113,32 @@ model Comment {
   userId String?
   Post   Post?   @relation(fields: [postId], references: [id])
   postId String?
+}
+
+enum LikeType {
+  LIKE
+  UNLIKE
+}
+
+model Like {
+  id String @id @default(uuid())
+
+  Post   Post?   @relation(fields: [postId], references: [id])
+  postId String?
+  User   User?   @relation(fields: [userId], references: [id])
+  userId String?
+
+  likeType LikeType @default(UNLIKE)
+}
+
+model processed_macro_economy_articles {
+  id              Int       @id @default(autoincrement())
+  title           String    @db.VarChar
+  link            String    @unique @db.VarChar
+  summary         String?
+  content         String?
+  published_at    DateTime? @db.Timestamp(6)
+  processed_at    DateTime? @db.Timestamp(6)
+  relevance_score Float?
+  entities        String?
 }

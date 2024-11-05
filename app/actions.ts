@@ -3,7 +3,7 @@
 import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
 import { redirect } from "next/navigation";
 import prisma from "./lib/db";
-import { Prisma, TypeOfVote } from "@prisma/client";
+import { Prisma, TypeOfVote, LikeType } from "@prisma/client";
 import { JSONContent } from "@tiptap/react";
 import { revalidatePath } from "next/cache";
 import slugify from "react-slugify";
@@ -75,6 +75,70 @@ export async function createCommunity(prevState: any, formData: FormData) {
       }
     }
     throw e;
+  }
+}
+export async function joinCommunity(formData: FormData) {
+  console.log("joinCommunity");
+  const communitySlug = formData.get("communitySlug") as string;
+  const { getUser } = getKindeServerSession();
+  const user = await getUser();
+
+  if (!user) {
+    return redirect("/api/auth/login");
+  }
+
+  try {
+    // Step 1: Get the community ID based on the provided slug
+    const community = await prisma.community.findUnique({
+      where: { slug: communitySlug },
+      select: { id: true },
+    });
+
+    if (!community) {
+      return {
+        message: "Community not found.",
+        status: "error",
+      };
+    }
+
+    // Step 2: Check if the user is already a member of the community
+    const existingMembership = await prisma.membership.findUnique({
+      where: {
+        userId_communityId: {
+          userId: user.id,
+          communityId: community.id,
+        },
+      },
+    });
+
+    if (existingMembership) {
+      console.log("existingMembership", existingMembership);
+      return {
+        message: "You are already a member of this community.",
+        status: "info",
+      };
+    }
+
+    // Step 3: Create a new membership using userId and communityId directly
+    await prisma.membership.create({
+      data: {
+        userId: user.id,
+        communityId: community.id,
+      },
+    });
+
+    console.log("membership created");
+    return revalidatePath("/", "page");
+    return {
+      message: "Successfully joined the community!",
+      status: "success",
+    };
+  } catch (error) {
+    console.error(error);
+    return {
+      message: "An error occurred while joining the community.",
+      status: "error",
+    };
   }
 }
 
@@ -285,6 +349,56 @@ export async function handleVote(formData: FormData) {
   await prisma.vote.create({
     data: {
       voteType: voteDirection,
+      userId: user.id,
+      postId: postId,
+    },
+  });
+
+  return revalidatePath("/", "page");
+}
+export async function handleLike(formData: FormData) {
+  const { getUser } = getKindeServerSession();
+  const user = await getUser();
+
+  if (!user) {
+    return redirect("/api/auth/login");
+  }
+
+  const postId = formData.get("postId") as string;
+  const likeDirection = formData.get("likeDirection") as LikeType;
+
+  const existingLike = await prisma.like.findFirst({
+    where: {
+      postId: postId,
+      userId: user.id,
+    },
+  });
+
+  if (existingLike) {
+    if (existingLike.likeType === likeDirection) {
+      await prisma.like.delete({
+        where: {
+          id: existingLike.id,
+        },
+      });
+
+      return revalidatePath("/", "page");
+    } else {
+      await prisma.like.update({
+        where: {
+          id: existingLike.id,
+        },
+        data: {
+          likeType: likeDirection,
+        },
+      });
+      return revalidatePath("/", "page");
+    }
+  }
+
+  await prisma.like.create({
+    data: {
+      likeType: likeDirection,
       userId: user.id,
       postId: postId,
     },

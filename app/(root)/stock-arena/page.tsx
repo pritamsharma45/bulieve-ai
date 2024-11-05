@@ -13,41 +13,25 @@ import { SuspenseCard } from "@/app/components/SuspenseCard";
 import Pagination from "@/app/components/Pagination";
 import { unstable_noStore as noStore } from "next/cache";
 import { Input } from "@/components/ui/input";
-
-// model Community {
+import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
+import { joinCommunity } from "@/app/actions";
+// model Membership {
 //   id          String   @id @default(uuid())
-//   name        String   @unique
-//   slug        String   @unique
-//   description String?
+//   userId      String
+//   communityId String
 //   createdAt   DateTime @default(now())
-//   updatedAt   DateTime @updatedAt
-//   User        User?    @relation(fields: [userId], references: [id])
-//   userId      String?
-//   posts       Post[]
-// }
 
-// model Post {
-//   id          String  @id @default(uuid())
-//   title       String
-//   textContent Json?
-//   imageString String?
+//   user      User      @relation(fields: [userId], references: [id])
+//   community Community @relation(fields: [communityId], references: [id])
 
-//   Vote    Vote[]
-//   Comment Comment[]
-
-//   createdAt     DateTime   @default(now())
-//   updatedAt     DateTime   @updatedAt
-//   Subreddit     Subreddit? @relation(fields: [subName], references: [name])
-//   subName       String?
-//   User          User?      @relation(fields: [userId], references: [id])
-//   userId        String?
-//   Communities   Community? @relation(fields: [communitySlug], references: [slug])
-//   communitySlug String?
+//   @@unique([userId, communityId]) // Ensure unique user-community pairs
 // }
 
 async function getData(searchParam: string) {
+  const { getUser } = getKindeServerSession();
+  const user = await getUser();
   noStore();
-  const [count, data] = await prisma.$transaction([
+  const [count, data,community] = await prisma.$transaction([
     prisma.post.count(),
     prisma.post.findMany({
       take: 10,
@@ -69,10 +53,10 @@ async function getData(searchParam: string) {
           },
         },
         communitySlug: true,
-        Vote: {
+        Like: {
           select: {
             userId: true,
-            voteType: true,
+            likeType: true,
             postId: true,
           },
         },
@@ -81,18 +65,37 @@ async function getData(searchParam: string) {
         createdAt: "desc",
       },
     }),
+    // Get all the communities the user is a member of to display in the sidebar
+    prisma.membership.findMany({
+      where: {
+        userId: user.id,
+      },
+      select: {
+        community:{
+          select: {
+            id: true,
+            name: true,
+            slug: true,
+          }
+        }
+      },
+    }),
   ]);
-  return { data, count };
+  return { data, count,community };
 }
 
 async function getCommunites(){
-  // get fake list  communites
   const data = await prisma.community.findMany({
     select: {
       id: true,
       name: true,
       description: true,
       slug: true,
+      Membership: {
+        select: {
+          userId: true,
+        },
+      },
     },
   });
   return data;
@@ -156,21 +159,21 @@ async function ShowItems({ searchParams }: { searchParams: { page: string } }) {
   const { count, data } = await getData(searchParams.page);
   return (
     <>
-      {data.map((post) => (
-        <PostCard
-          id={post.id}
-          imageString={post.imageString}
-          jsonContent={post.textContent}
-          title={post.title}
-          key={post.id}
-          commentAmount={post.Comment.length}
-          userName={post.User?.userName as string}
-          voteCount={post.Vote.reduce((acc, vote) => {
-            if (vote.voteType === "UP") return acc + 1;
-            if (vote.voteType === "DOWN") return acc - 1;
-            return acc;
-          }, 0)}
-        />
+          {data.map((post) => (
+            <PostCard
+      id={post.id}
+      imageString={post.imageString}
+      jsonContent={post.textContent}
+      title={post.title}
+      key={post.id}
+      commentAmount={post.Comment.length}
+      userName={post.User?.userName as string}
+      likeCount={post.Like.reduce((acc, like) => {
+        if (like.likeType === "LIKE") return acc + 1;
+        return acc;
+      }, 0)}
+    />
+
       ))}
 
       <Pagination totalPages={Math.ceil(count / 10)} />
@@ -180,6 +183,8 @@ async function ShowItems({ searchParams }: { searchParams: { page: string } }) {
 
 async function ShowCommunities (){
   const communities = await getCommunites();
+  const { getUser } = getKindeServerSession();
+const user = await getUser();
   return (
     <div className="p-4">
       <h1 style={{ fontWeight: 'bold' }}>Communities</h1>
@@ -188,15 +193,47 @@ async function ShowCommunities (){
         <Input type="text" placeholder="Search Communities" />
         <Button className="bg-primary text-white px-2 py-1 ml-1 rounded">Search</Button>
       </div>
-      <ul>
-        {communities.map((community) => (
-          <li key={community.id}>
-            <Link href={`stock-arena/${community.slug}`}>
-              {community.name}
-            </Link>
-          </li>
-        ))}
-      </ul>
+
+<ul className="flex flex-wrap gap-4">
+
+  {communities.map((community) => {
+    const isMember = community.Membership.some(
+      (member) => member.userId === user?.id
+    );
+
+    return (
+      <li
+        key={community.id}
+        className="px-4 py-1 bg-teal-100 text-blue-800 rounded-full flex justify-between gap-4 w-72"
+      >
+        <Link href={`stock-arena/${community.slug}`} className="hover:underline">
+          {community.name}
+        </Link>
+
+        {/* Conditional rendering for join/joined status */}
+        {isMember ? (
+          <div className="px-2 py-1 bg-green-300 rounded-full text-xs font-medium">
+            Joined ✔️
+          </div>
+        ) : (
+          <form action={joinCommunity}>
+            <input type="hidden" name="communitySlug" value={community.slug} />
+            <button
+              type="submit"
+              className="px-3 py-1 bg-blue-500 text-white rounded-full text-xs font-medium hover:bg-blue-600 transition ease-in-out duration-300"
+            >
+              + Join
+            </button>
+          </form>
+        )}
+      </li>
+    );
+  })}
+</ul>
+{/* 
+      <pre>
+        {JSON.stringify(communities, null, 2)}
+      </pre> */}
     </div>
   );
 }

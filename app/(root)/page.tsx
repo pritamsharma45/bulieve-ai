@@ -36,10 +36,10 @@ async function getData(searchParam: string) {
             userName: true,
           },
         },
-        Vote: {
+        Like: {
           select: {
             userId: true,
-            voteType: true,
+            likeType: true,
             postId: true,
           },
         },
@@ -113,10 +113,8 @@ async function ShowItems({ searchParams }: { searchParams: { page: string } }) {
           key={post.id}
           commentAmount={post.Comment.length}
           userName={post.User?.userName as string}
-          voteCount={post.Vote.reduce((acc, vote) => {
-            if (vote.voteType === "UP") return acc + 1;
-            if (vote.voteType === "DOWN") return acc - 1;
-
+          likeCount={post.Like.reduce((acc, like) => {
+            if (like.likeType === "LIKE") return acc + 1;
             return acc;
           }, 0)}
         />

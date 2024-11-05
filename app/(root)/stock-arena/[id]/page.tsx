@@ -1,4 +1,5 @@
 import { CreatePostCard } from "../components/CreatePostCard";
+import { JoinCommunityButton } from "../components/JoinCommunityButton";
 import Pagination from "@/app/components/Pagination";
 import { PostCard } from "@/app/components/PostCard";
 import { SubDescriptionForm } from "@/app/components/SubDescriptionForm";
@@ -8,44 +9,17 @@ import { Card } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
 import { Cake, FileQuestion } from "lucide-react";
+import { joinCommunity } from "@/app/actions";
 import Image from "next/image";
 import Link from "next/link";
 import { unstable_noStore as noStore } from "next/cache";
-// model Community {
-//   id          String   @id @default(uuid())
-//   name        String   @unique
-//   slug        String   @unique
-//   description String?
-//   createdAt   DateTime @default(now())
-//   updatedAt   DateTime @updatedAt
-//   User        User?    @relation(fields: [userId], references: [id])
-//   userId      String?
-//   posts       Post[]
-// }
-
-// model Post {
-//   id          String  @id @default(uuid())
-//   title       String
-//   textContent Json?
-//   imageString String?
-
-//   Vote    Vote[]
-//   Comment Comment[]
-
-//   createdAt     DateTime   @default(now())
-//   updatedAt     DateTime   @updatedAt
-//   Subreddit     Subreddit? @relation(fields: [subName], references: [name])
-//   subName       String?
-//   User          User?      @relation(fields: [userId], references: [id])
-//   userId        String?
-//   Communities   Community? @relation(fields: [communitySlug], references: [slug])
-//   communitySlug String?
-// }
 
 async function getData(slug: string, searchParam: string) {
+  const { getUser } = getKindeServerSession();
+  const user = await getUser();
   noStore();
   console.log("searchParam",searchParam);
-  const [count,data] = await prisma.$transaction([
+  const [count, data, membership,community] = await prisma.$transaction([
     prisma.post.count({
       where: {
         communitySlug: slug,
@@ -76,10 +50,10 @@ async function getData(slug: string, searchParam: string) {
         },
         subName: true,
         communitySlug: true,
-        Vote: {
+        Like: {
           select: {
             userId: true,
-            voteType: true,
+            likeType: true,
             postId: true,
           },
         },
@@ -88,9 +62,34 @@ async function getData(slug: string, searchParam: string) {
         createdAt: "desc",
       },
     }),
+
+    // Membership check for the current user
+    prisma.membership.findFirst({
+      where: {
+        community: {
+          slug: slug,
+        },
+        userId: user?.id || undefined, // Only if userId is provided
+      },
+      select: {
+        id: true,
+      },
+    }),
+    // Find community with communitySlug
+    prisma.community.findFirst({
+      where: {
+        slug: slug,
+      },
+      select: {
+        id: true,
+        name: true,
+        description: true,
+        slug: true,
+      },
+    }),
   ]);
 
-  return { count,data };
+  return { count, data, isMember: !!membership,community };
 }
 
 export default async function StockArenaRoute({
@@ -104,41 +103,68 @@ export default async function StockArenaRoute({
 
   const page = searchParams.page || "1";
 
-  const { count, data } = await getData(params.id, page);
+  const { count, data,isMember,community } = await getData(params.id, page);
 
   return (
-    <div>
-      {/* Blue background banner */}
-      <div className="bg-blue-500 h-32 w-full flex flex-col items-center justify-center">
-        <h1 className="text-white text-4xl">Stock Arena</h1>
-        <br />
-        <p>Themed banner</p>
-        
-      </div>
+    <div className="container mx-auto p-4">
+  {/* Themed Banner */}
+  <div className="w-3/4 bg-gradient-to-r from-indigo-600 to-purple-600 rounded-lg p-8 text-center mb-6 shadow-lg">
+  <h1 className="text-4xl font-bold text-white">Stock Arena</h1>
+    <p className="text-2xl text-purple-100">{community?.name}</p>
+    <p className="text-xs text-purple-100">{community?.description}</p>
+  </div>
+
+  {/* Create Post Card */}
+  <div className="flex items-center justify-between w-3/4 mb-4">
+    <div className="w-3/4 mr-4">
       <CreatePostCard communitySlug={params.id} />
-    <>
-      {data.map((post) => (
-        <PostCard
-          id={post.id}
-          imageString={post.imageString}
-          jsonContent={post.textContent}
-          title={post.title}
-          key={post.id}
-          commentAmount={post.Comment.length}
-          userName={post.User?.userName as string}
-          voteCount={post.Vote.reduce((acc, vote) => {
-            if (vote.voteType === "UP") return acc + 1;
-            if (vote.voteType === "DOWN") return acc - 1;
-
-            return acc;
-          }, 0)}
-        />
-      ))}
-
-      <Pagination totalPages={Math.ceil(count / 10)} />
-    </>
-
     </div>
+    {
+      isMember ? (
+        <div className="w-1/4">
+          <div className="p-2 bg-green-300 rounded-md">Joined ✔️</div>
+        </div>
+      ):(
+        <div className="w-1/4">
+            <form action={joinCommunity}>
+                    <input type="hidden" name="communitySlug" value={params.id} />
+                    <Button
+                      type="submit"
+                      className={`flex items-center gap-x-1 transition duration-300 ease-in-out transform`}
+                    >
+                      Join Community
+                    </Button>
+            </form>
+            </div>
+      )
+    }
+  </div>
+  {/* Post Feed */}
+  <div className="w-3/4">
+    {data.map((post) => (
+      <div className=" mb-4">
+         <PostCard
+        id={post.id}
+        imageString={post.imageString}
+        jsonContent={post.textContent}
+        title={post.title}
+        key={post.id}
+        commentAmount={post.Comment.length}
+        userName={post.User?.userName as string}
+        likeCount={post.Like.reduce((acc, like) => like.likeType === "LIKE" ? acc + 1 : acc, 0)}
+        
+      />
+      </div>
+     
+    ))}
+  </div>
+
+  {/* Pagination */}
+  <div className="mt-8 flex justify-center">
+    <Pagination totalPages={Math.ceil(count / 10)} />
+  </div>
+</div>
+
   );
 }
 

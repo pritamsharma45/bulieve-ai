@@ -123,6 +123,15 @@ export async  function SidebarLeft() {
 
   const { getUser } = getKindeServerSession();
   const user = await getUser();
+
+  const getUserInitial = (name: string) => {
+    return name.split(" ").map((n) => n[0]).join("").toUpperCase();
+  }
+
+
+
+
+  console.log("user",user);
   return (
     <Sidebar collapsible="icon">
       <SidebarHeader>
@@ -181,10 +190,15 @@ export async  function SidebarLeft() {
                   {user ? (
         <Avatar className="h-8 w-8 rounded-lg">
         <AvatarImage
-          src={data.user.avatar}
-          alt={data.user.name}
+          src={user?.picture ||''}
+          alt={user?.given_name|| ''}
         />
-        <AvatarFallback className="rounded-lg">CN</AvatarFallback>
+        <AvatarFallback className="rounded-lg">
+        {
+                      getUserInitial(user?.given_name+" "+user?.family_name)
+                    }
+        </AvatarFallback>
+    
       </Avatar>
         ) : (
           <div className="flex items-center gap-x-4">
@@ -216,25 +230,23 @@ export async  function SidebarLeft() {
                       alt={data.user.name}
                     />
                     <AvatarFallback className="rounded-lg">
-                      CN
+                    {
+                      getUserInitial(user?.given_name+" "+user?.family_name)
+                    }
                     </AvatarFallback>
                   </Avatar>
                   <div className="grid flex-1 text-left text-sm leading-tight">
                     <span className="truncate font-semibold">
-                      {data.user.name}
+                      {user?.given_name}
                     </span>
                     <span className="truncate text-xs">
-                      {data.user.email}
+                      {user?.email}
                     </span>
                   </div>
                 </div>
               </DropdownMenuLabel>
               <DropdownMenuSeparator />
               <DropdownMenuGroup>
-                <DropdownMenuItem>
-                  <Sparkles />
-                  Upgrade to Pro
-                </DropdownMenuItem>
               </DropdownMenuGroup>
               <DropdownMenuSeparator />
               <DropdownMenuGroup>
