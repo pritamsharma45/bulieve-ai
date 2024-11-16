@@ -1,7 +1,7 @@
 import { Card } from "@/components/ui/card";
 import Image from "next/image";
 import Banner from "@/public/banner.png";
-import HelloImage from "@/public/hero-image.png";
+import HelloImage from "@/public/bulieve-logo.jpeg";
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
@@ -110,13 +110,16 @@ export default function Home({
   return (
     <div className="max-w-[1000px] mx-auto flex gap-x-10 mt-4 mb-10">
       <div className="w-[65%] flex flex-col gap-y-5">
+        <div className="flex flex-col">
         <CreatePostCard />
+        </div>
+       
         <Suspense fallback={<SuspenseCard />} key={searchParams.page}>
           <ShowItems searchParams={searchParams} />
         </Suspense>
       </div>
       <div className="w-[35%] flex flex-col">
-        <Card>
+        {/* <Card>
           <Image src={Banner} alt="Banner" />
           <div className="p-2">
             <div className="flex items-center">
@@ -143,7 +146,7 @@ export default function Home({
               </Button>
             </div>
           </div>
-        </Card>
+        </Card> */}
         <Card className="mt-2">
         <Suspense fallback={<SuspenseCard />}>
           <ShowCommunities />

@@ -71,20 +71,7 @@ export default async function Home({
         <Card>
           <Image src={Banner} alt="Banner" />
           <div className="p-2">
-            <div className="flex items-center">
-              <Image
-                src={HelloImage}
-                alt="Hello Image"
-                className="w-10 h-16 -mt-6"
-              />
-              <h1 className="font-medium pl-3">Home</h1>
-            </div>
-            <p className="text-sm text-muted-foreground pt-2">
-              Your Home Reddit frontpage. Come here to check in with your
-              favorite communites!
-            </p>
-            <Separator className="my-5" />
-
+        
             <div className="flex flex-col gap-y-3">
               <Button asChild variant="secondary">
                 <Link href="/stock-arena//create-post">Create Post</Link>

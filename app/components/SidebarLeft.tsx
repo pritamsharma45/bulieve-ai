@@ -1,29 +1,13 @@
 
 
 import * as React from "react"
+import pfp from "@/public/bulieve-logo.jpeg";
 import {
-  AudioWaveform,
   BadgeCheck,
-  Bell,
-  BookOpen,
-  Bot,
-  ChevronRight,
   ChevronsUpDown,
-  Command,
-  CreditCard,
-  Folder,
-  Forward,
   Frame,
-  GalleryVerticalEnd,
   LogOut,
-  Map,
   MoreHorizontal,
-  PieChart,
-  Plus,
-  Settings2,
-  Sparkles,
-  SquareTerminal,
-  Trash2,
   Group,Newspaper
 } from "lucide-react"
 
@@ -117,9 +101,24 @@ const data = {
       icon: Group,
     },
   ],
+};
+
+interface Project {
+  name: string;
+  url: string;
+  icon: React.ComponentType;
 }
 
-export async  function SidebarLeft() {
+interface Data {
+  user: {
+    name: string;
+    email: string;
+    avatar: string;
+  };
+  projects: Project[];
+}
+
+export async function SidebarLeft({ data }: { data: Data }) {
 
   const { getUser } = getKindeServerSession();
   const user = await getUser();
@@ -142,13 +141,14 @@ export async  function SidebarLeft() {
                   className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
                 >
                   <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
-                   B
+                  <Image src={pfp} alt="pfp" className="w-fit" />
+                    
                   </div>
                   <div className="grid flex-1 text-left text-sm leading-tight">
-                    <span className="truncate font-semibold">
+                  
+                  <span className="truncate font-semibold">
                     BULIEVE.AI
                     </span>
-             
                   </div>
                 </SidebarMenuButton>
           </SidebarMenuItem>

@@ -21,7 +21,7 @@ export default async function News() {
   const allNewsItems = await getData();
 
   return (
-    <div className="max-w-[1000px] mx-auto flex gap-x-10 mt-4 mb-10">
+    <div className="mx-auto flex gap-x-10 mt-4 mb-10">
      <NewsCard newsItems={allNewsItems} />
     </div>
   );

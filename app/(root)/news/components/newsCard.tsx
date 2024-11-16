@@ -16,26 +16,24 @@ interface NewsItem {
 
 interface NewsData {
   title: string
-  description: string
   items: NewsItem[]
   last_updated: string
 }
 
 export function NewsCard({ newsItems }: { newsItems: NewsItem[] }) {
   const newsData: NewsData = {
-    "title": "Zee News :Business",
-    "description": "Visit Zee News for latest India news, get latest news from India and all over the world. We provide you latest celebrity news, latest bollywood news and entertainment news with fastest top stories online about cricket, sports, business, bollywood, entertainment, lifestyle, world and science to get yourself updated.",
-    "items": newsItems,
+    "title": "News Arena", "items": newsItems,
     "last_updated": "2024-10-30T18:36:43.078917"
   }
 
   const [selectedNews, setSelectedNews] = useState(newsData.items[0])
 
   return (
-    <div className="container mx-auto p-4">
+    <div className="mx-auto p-2">
       <h1 className="text-3xl font-bold mb-6">{newsData.title}</h1>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="md:col-span-1">
+      <div className="flex flex-col-reverse md:flex-row gap-6"
+>
+        <div className="md:w-1/3">
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center">
@@ -53,7 +51,7 @@ export function NewsCard({ newsItems }: { newsItems: NewsItem[] }) {
                     }`}
                     onClick={() => setSelectedNews(news)}
                   >
-                    <h3 className="text-lg font-semibold mb-2">
+                    <h3 className="text-sm font-semibold mb-2">
                       {news.title}
                     </h3>
                     {news.summary && (
@@ -65,14 +63,14 @@ export function NewsCard({ newsItems }: { newsItems: NewsItem[] }) {
                       <Clock className="mr-1 h-3 w-3" />
                       {news.published_at ? new Date(news.published_at).toLocaleString() : "N/A"}
                     </div>
-                    <Separator className="my-4" />
+                    <Separator className="my-1" />
                   </div>
                 ))}
               </ScrollArea>
             </CardContent>
           </Card>
         </div>
-        <div className="md:col-span-2">
+        <div className="md:w-2/3">
           <Card>
             <CardHeader>
               <CardTitle>{selectedNews.title}</CardTitle>

@@ -1,6 +1,6 @@
 import { Card } from "@/components/ui/card";
 import Image from "next/image";
-import pfp from "../../public/pfp.png";
+import pfp from "@/public/bulieve-logo.jpeg";
 import { Input } from "@/components/ui/input";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
