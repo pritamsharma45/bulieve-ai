@@ -91,13 +91,13 @@ async function ShowItems({ searchParams }: { searchParams: { page: string } }) {
   const { count, data } = await getData(searchParams.page);
   return (
     <>
-      {data.map((post) => (
+      {data?.map((post,i) => (
         <PostCard
           id={post.id}
           imageString={post.imageString}
           jsonContent={post.textContent}
           title={post.title}
-          key={post.id}
+          key={i}
           commentAmount={post.Comment.length}
           userName={post.User?.userName as string}
           likeCount={post.Like.reduce((acc, like) => {
