@@ -36,31 +36,31 @@ const carouselItems = [
   {
     title: "Market Trends",
     description: "Analysis of current market trends and future predictions",
-    imageUrl: "/api/placeholder/600/400",
+    imageUrl: "https://codeskulptor-demos.commondatastorage.googleapis.com/GalaxyInvaders/back05.jpg",
     category: "Analysis"
   },
   {
     title: "Stock Picks",
     description: "Top stock picks for the upcoming quarter",
-    imageUrl: "/api/placeholder/600/400",
+    imageUrl: "https://codeskulptor-demos.commondatastorage.googleapis.com/GalaxyInvaders/back05.jpg",
     category: "Investment"
   },
   {
     title: "Economic Outlook",
     description: "Global economic outlook and key indicators",
-    imageUrl: "/api/placeholder/600/400",
+    imageUrl: "https://codeskulptor-demos.commondatastorage.googleapis.com/GalaxyInvaders/back05.jpg",
     category: "Economy"
   },
   {
     title: "Crypto Updates",
     description: "Latest developments in cryptocurrency markets",
-    imageUrl: "/api/placeholder/600/400",
+    imageUrl: "https://codeskulptor-demos.commondatastorage.googleapis.com/GalaxyInvaders/back05.jpg",
     category: "Crypto"
   },
   {
     title: "Tech Sector",
     description: "Technology sector performance and analysis",
-    imageUrl: "/api/placeholder/600/400",
+    imageUrl: "https://codeskulptor-demos.commondatastorage.googleapis.com/GalaxyInvaders/back05.jpg",
     category: "Technology"
   }
 ];
