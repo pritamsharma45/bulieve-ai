@@ -39,12 +39,12 @@ const data = {
       icon: Frame,
     },
     {
-      name: "News",
+      name: "News Arena",
       url: "/news",
       icon: Newspaper,
     },
     {
-      name: "Groups",
+      name: "Teams",
       url: "/groups",
       icon: Group,
     },
