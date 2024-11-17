@@ -21,7 +21,7 @@ export default async function News() {
   const allNewsItems = await getData();
 
   return (
-    <div className="mx-auto flex gap-x-10 mt-4 mb-10">
+    <div className="mx-auto flex container px-4 py-6 space-y-6">
       <section className="w-full">
         <NewsArenaBanner />
       </section>
