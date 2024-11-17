@@ -41,7 +41,7 @@ export default async function News() {
       <TableHead className="w-[100px]">Post</TableHead>
       <TableHead>User</TableHead>
       <TableHead>Likes</TableHead>
-      <TableHead className="text-right">Comments</TableHead>
+      <TableHead >Comments</TableHead>
       </TableRow>
       </TableHeader>
       <TableBody>
@@ -49,7 +49,7 @@ export default async function News() {
       <TableCell className="font-medium">Reliance Stock Up!!!</TableCell>
       <TableCell>Parth</TableCell>
       <TableCell>5</TableCell>
-      <TableCell className="text-right">10</TableCell>
+      <TableCell >10</TableCell>
       </TableRow>
       </TableBody>
       </Table>
