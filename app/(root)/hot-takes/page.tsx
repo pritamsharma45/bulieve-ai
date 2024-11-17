@@ -3,6 +3,7 @@ import {NewsCard} from "./components/newsCard";
 import { Button } from "@/components/ui/button"
 import { unstable_noStore as noStore } from "next/cache";
 import { Card, CardContent } from "@/components/ui/card"
+import HotTakesBanner from "./components/hottakesbanner";
 import {
   Table,
   TableBody,
@@ -41,7 +42,7 @@ export default async function News() {
 
   return (
     <div className="flex flex-col space-y-5 md:flex-row md:space-y-0 md:space-x-5">
-     
+     <div> <HotTakesBanner /></div>
      <div className="w-full">
      <Table>
      <TableCaption>All the HOT Takes Today!</TableCaption>
