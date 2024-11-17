@@ -1,7 +1,7 @@
 import prisma from "@/app/lib/db";
 import {NewsCard} from "./components/newsCard";
-
 import { unstable_noStore as noStore } from "next/cache";
+import NewsArenaBanner from "./components/newsarenabanner";
 
 async function getData() {
   noStore();
@@ -22,6 +22,9 @@ export default async function News() {
 
   return (
     <div className="mx-auto flex gap-x-10 mt-4 mb-10">
+      <section className="w-full">
+        <NewsArenaBanner />
+      </section>
      <NewsCard newsItems={allNewsItems} />
     </div>
   );
