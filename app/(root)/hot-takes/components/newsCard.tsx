@@ -38,7 +38,7 @@ export function NewsCard({ newsItems }: { newsItems: NewsItem[] }) {
             <CardHeader>
               <CardTitle className="flex items-center">
                 <TrendingUp className="mr-2" />
-                Trending News
+                HOT Takes 
               </CardTitle>
             </CardHeader>
             <CardContent>
