@@ -21,7 +21,6 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel"
-import { MessageSquare, ThumbsUp } from "lucide-react";
 
 // Dummy data for hot takes
 const hotTakes = [
@@ -65,37 +64,6 @@ const carouselItems = [
     category: "Technology"
   }
 ];
-
-
-
-
-const HotTakesWall = () => (
-  <div className="w-full">
-    <h2 className="text-2xl font-bold mb-6 text-center">Today's Hot Takes</h2>
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-      {hotTakes.map((take, index) => (
-        <Card key={index} className="hover:shadow-lg transition-shadow">
-          <CardHeader className="pb-2">
-            <CardTitle className="text-lg">{take.post}</CardTitle>
-            <CardDescription className="text-sm">Posted by {take.user}</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="flex justify-between items-center">
-              <div className="flex items-center space-x-2">
-                <ThumbsUp className="w-4 h-4 text-blue-500" />
-                <span className="text-sm text-gray-600">{take.likes}</span>
-              </div>
-              <div className="flex items-center space-x-2">
-                <MessageSquare className="w-4 h-4 text-green-500" />
-                <span className="text-sm text-gray-600">{take.comments}</span>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      ))}
-    </div>
-  </div>
-);
 
 async function getData() {
   noStore();
@@ -176,9 +144,7 @@ export default async function News() {
           </TableBody>
         </Table>
       </section>
-      <section className="w-full">
-        <HotTakesWall />
-      </section>
+
    
     </div>
   );
