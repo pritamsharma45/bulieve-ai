@@ -2,6 +2,7 @@ import prisma from "@/app/lib/db";
 import {NewsCard} from "./components/newsCard";
 import { Button } from "@/components/ui/button"
 import { unstable_noStore as noStore } from "next/cache";
+import { Card, CardContent } from "@/components/ui/card"
 import {
   Table,
   TableBody,
@@ -11,6 +12,14 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
+
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel"
 
 
 async function getData() {
@@ -53,6 +62,24 @@ export default async function News() {
       </TableRow>
       </TableBody>
       </Table>
+
+      <Carousel className="w-full max-w-xs">
+      <CarouselContent>
+        {Array.from({ length: 5 }).map((_, index) => (
+          <CarouselItem key={index}>
+            <div className="p-1">
+              <Card>
+                <CardContent className="flex aspect-square items-center justify-center p-6">
+                  <span className="text-4xl font-semibold">{index + 1}</span>
+                </CardContent>
+              </Card>
+            </div>
+          </CarouselItem>
+        ))}
+      </CarouselContent>
+      <CarouselPrevious />
+      <CarouselNext />
+    </Carousel>
 
     </div>
   );
