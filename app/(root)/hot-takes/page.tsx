@@ -40,7 +40,7 @@ export default async function News() {
   const allNewsItems = await getData();
 
   return (
-    <div className="mx-auto flex gap-x-10 mt-4 mb-10">
+    <div className="flex flex-col space-y-5 md:flex-row md:space-y-0 md:space-x-5">
      
      <div className="w-full">
      <Table>
