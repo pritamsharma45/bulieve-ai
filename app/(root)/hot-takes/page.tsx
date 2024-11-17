@@ -1,19 +1,9 @@
-import prisma from "@/app/lib/db";
-
-
+import React from 'react';
 import { unstable_noStore as noStore } from "next/cache";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
+import prisma from "@/app/lib/db";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import HotTakesBanner from "./components/hottakesbanner";
-import {
-  Table,
-  TableBody,
-  TableCaption,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table"
-
+import { MessageSquare, ThumbsUp } from 'lucide-react';
 import {
   Carousel,
   CarouselContent,
@@ -78,18 +68,46 @@ async function getData() {
   return data;
 }
 
+const HotTakesWall = () => (
+  <div className="w-full">
+    <h2 className="text-2xl font-bold mb-6 text-center">Today's Hot Takes</h2>
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      {hotTakes.map((take, index) => (
+        <Card key={index} className="hover:shadow-lg transition-shadow">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-lg">{take.post}</CardTitle>
+            <CardDescription className="text-sm">Posted by {take.user}</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="flex justify-between items-center">
+              <div className="flex items-center space-x-2">
+                <ThumbsUp className="w-4 h-4 text-blue-500" />
+                <span className="text-sm text-gray-600">{take.likes}</span>
+              </div>
+              <div className="flex items-center space-x-2">
+                <MessageSquare className="w-4 h-4 text-green-500" />
+                <span className="text-sm text-gray-600">{take.comments}</span>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      ))}
+    </div>
+  </div>
+);
+
 export default async function News() {
   const allNewsItems = await getData();
 
   return (
-    <div className="container mx-auto px-4 py-6 space-y-6">
+    <div className="container mx-auto px-4 py-6 space-y-8">
       {/* Banner Section */}
       <section className="w-full">
         <HotTakesBanner />
       </section>
 
-         {/* Carousel Section */}
-         <section className="w-full flex justify-center">
+      {/* Carousel Section */}
+      <section className="w-full flex justify-center">
         <Carousel className="w-full max-w-2xl">
           <CarouselContent>
             {carouselItems.map((item, index) => (
@@ -120,32 +138,10 @@ export default async function News() {
         </Carousel>
       </section>
 
-      {/* Table Section */}
-      <section className="w-full overflow-x-auto">
-        <Table>
-          <TableCaption>All the HOT Takes Today!</TableCaption>
-          <TableHeader>
-            <TableRow>
-              <TableHead className="w-[250px]">Post</TableHead>
-              <TableHead>User</TableHead>
-              <TableHead>Likes</TableHead>
-              <TableHead>Comments</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {hotTakes.map((take, index) => (
-              <TableRow key={index}>
-                <TableCell className="font-medium">{take.post}</TableCell>
-                <TableCell>{take.user}</TableCell>
-                <TableCell>{take.likes}</TableCell>
-                <TableCell>{take.comments}</TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
+      {/* Hot Takes Wall Section */}
+      <section className="w-full">
+        <HotTakesWall />
       </section>
-
-   
     </div>
   );
 }
