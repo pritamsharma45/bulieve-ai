@@ -15,7 +15,7 @@ export default function News({
 }) {
   return (
     <div className="max-w-[1000px] mx-auto flex gap-x-10 mt-4 mb-10">
- Hot takes
+ This page is for Hot Takes
     </div>
   );
 }
