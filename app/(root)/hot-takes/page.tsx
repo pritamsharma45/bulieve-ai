@@ -1,5 +1,5 @@
 import prisma from "@/app/lib/db";
-
+import SocialFeed from "./components/social-feed";
 
 import { unstable_noStore as noStore } from "next/cache";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
@@ -82,7 +82,7 @@ export default async function News() {
   const allNewsItems = await getData();
 
   return (
-    <div className="container mx-auto px-4 py-6 space-y-6">
+    <div className="container mx-auto px-4 py-6 space-y-6 ">
       {/* Banner Section */}
       <section className="w-full">
         <HotTakesBanner />
@@ -120,7 +120,7 @@ export default async function News() {
         </Carousel>
       </section>
 
-      {/* Table Section */}
+      {/* Table Section
       <section className="w-full overflow-x-auto">
         <Table>
           <TableCaption>All the HOT Takes Today!</TableCaption>
@@ -143,9 +143,12 @@ export default async function News() {
             ))}
           </TableBody>
         </Table>
-      </section>
+      </section> */}
 
-   
+      <section className="w-full max-w-2xl mx-auto">
+      <h2 className="text-2xl font-bold mb-4">Hot Takes</h2>
+       <SocialFeed />
+      </section>
     </div>
   );
 }
