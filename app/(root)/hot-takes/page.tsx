@@ -2,7 +2,7 @@ import prisma from "@/app/lib/db";
 import {NewsCard} from "./components/newsCard";
 import { Button } from "@/components/ui/button"
 import { unstable_noStore as noStore } from "next/cache";
-import { Card, CardContent } from "@/components/ui/card"
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import HotTakesBanner from "./components/hottakesbanner";
 import {
   Table,
@@ -21,6 +21,49 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel"
+
+// Dummy data for hot takes
+const hotTakes = [
+  { post: "Reliance Stock Up!!!", user: "Parth", likes: 5, comments: 10 },
+  { post: "Tech Stocks Rally Continues", user: "Sarah", likes: 15, comments: 8 },
+  { post: "Bitcoin Hits New High", user: "Alex", likes: 25, comments: 20 },
+  { post: "Fed Rate Decision Impact", user: "Michael", likes: 12, comments: 15 },
+  { post: "Market Analysis 2024", user: "Jessica", likes: 18, comments: 12 }
+];
+
+// Dummy data for carousel
+const carouselItems = [
+  {
+    title: "Market Trends",
+    description: "Analysis of current market trends and future predictions",
+    imageUrl: "/api/placeholder/600/400",
+    category: "Analysis"
+  },
+  {
+    title: "Stock Picks",
+    description: "Top stock picks for the upcoming quarter",
+    imageUrl: "/api/placeholder/600/400",
+    category: "Investment"
+  },
+  {
+    title: "Economic Outlook",
+    description: "Global economic outlook and key indicators",
+    imageUrl: "/api/placeholder/600/400",
+    category: "Economy"
+  },
+  {
+    title: "Crypto Updates",
+    description: "Latest developments in cryptocurrency markets",
+    imageUrl: "/api/placeholder/600/400",
+    category: "Crypto"
+  },
+  {
+    title: "Tech Sector",
+    description: "Technology sector performance and analysis",
+    imageUrl: "/api/placeholder/600/400",
+    category: "Technology"
+  }
+];
 
 async function getData() {
   noStore();
@@ -51,36 +94,49 @@ export default async function News() {
           <TableCaption>All the HOT Takes Today!</TableCaption>
           <TableHeader>
             <TableRow>
-              <TableHead className="w-[100px]">Post</TableHead>
+              <TableHead className="w-[250px]">Post</TableHead>
               <TableHead>User</TableHead>
               <TableHead>Likes</TableHead>
               <TableHead>Comments</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            <TableRow>
-              <TableCell className="font-medium">Reliance Stock Up!!!</TableCell>
-              <TableCell>Parth</TableCell>
-              <TableCell>5</TableCell>
-              <TableCell>10</TableCell>
-            </TableRow>
+            {hotTakes.map((take, index) => (
+              <TableRow key={index}>
+                <TableCell className="font-medium">{take.post}</TableCell>
+                <TableCell>{take.user}</TableCell>
+                <TableCell>{take.likes}</TableCell>
+                <TableCell>{take.comments}</TableCell>
+              </TableRow>
+            ))}
           </TableBody>
         </Table>
       </section>
 
       {/* Carousel Section */}
       <section className="w-full flex justify-center">
-        <Carousel className="w-full max-w-xs">
+        <Carousel className="w-full max-w-2xl">
           <CarouselContent>
-            {Array.from({ length: 5 }).map((_, index) => (
+            {carouselItems.map((item, index) => (
               <CarouselItem key={index}>
-                <div className="p-1">
-                  <Card>
-                    <CardContent className="flex aspect-square items-center justify-center p-6">
-                      <span className="text-4xl font-semibold">{index + 1}</span>
-                    </CardContent>
-                  </Card>
-                </div>
+                <Card className="border-0 shadow-md">
+                  <CardContent className="p-0">
+                    <div className="relative">
+                      <img
+                        src={item.imageUrl}
+                        alt={item.title}
+                        className="w-full h-48 object-cover rounded-t-lg"
+                      />
+                      <div className="absolute top-2 right-2 bg-blue-500 text-white px-2 py-1 rounded-full text-sm">
+                        {item.category}
+                      </div>
+                    </div>
+                    <div className="p-4">
+                      <h3 className="text-xl font-semibold mb-2">{item.title}</h3>
+                      <p className="text-gray-600">{item.description}</p>
+                    </div>
+                  </CardContent>
+                </Card>
               </CarouselItem>
             ))}
           </CarouselContent>
