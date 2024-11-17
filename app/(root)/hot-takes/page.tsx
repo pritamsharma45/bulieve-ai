@@ -22,7 +22,11 @@ export default async function News() {
 
   return (
     <div className="mx-auto flex gap-x-10 mt-4 mb-10">
-     <Button variant="outline">Button</Button>
+     <Button variant="outline">Button 1</Button>
+     <Button variant="outline">Button 2</Button>
+     <Button variant="outline">Button 3</Button>
+     <Button variant="outline">Button 4</Button>
+     <Button variant="outline">Button 5</Button>
 
     </div>
   );
