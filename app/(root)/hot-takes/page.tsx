@@ -88,33 +88,8 @@ export default async function News() {
         <HotTakesBanner />
       </section>
 
-      {/* Table Section */}
-      <section className="w-full overflow-x-auto">
-        <Table>
-          <TableCaption>All the HOT Takes Today!</TableCaption>
-          <TableHeader>
-            <TableRow>
-              <TableHead className="w-[250px]">Post</TableHead>
-              <TableHead>User</TableHead>
-              <TableHead>Likes</TableHead>
-              <TableHead>Comments</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {hotTakes.map((take, index) => (
-              <TableRow key={index}>
-                <TableCell className="font-medium">{take.post}</TableCell>
-                <TableCell>{take.user}</TableCell>
-                <TableCell>{take.likes}</TableCell>
-                <TableCell>{take.comments}</TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </section>
-
-      {/* Carousel Section */}
-      <section className="w-full flex justify-center">
+         {/* Carousel Section */}
+         <section className="w-full flex justify-center">
         <Carousel className="w-full max-w-2xl">
           <CarouselContent>
             {carouselItems.map((item, index) => (
@@ -144,6 +119,33 @@ export default async function News() {
           <CarouselNext />
         </Carousel>
       </section>
+
+      {/* Table Section */}
+      <section className="w-full overflow-x-auto">
+        <Table>
+          <TableCaption>All the HOT Takes Today!</TableCaption>
+          <TableHeader>
+            <TableRow>
+              <TableHead className="w-[250px]">Post</TableHead>
+              <TableHead>User</TableHead>
+              <TableHead>Likes</TableHead>
+              <TableHead>Comments</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {hotTakes.map((take, index) => (
+              <TableRow key={index}>
+                <TableCell className="font-medium">{take.post}</TableCell>
+                <TableCell>{take.user}</TableCell>
+                <TableCell>{take.likes}</TableCell>
+                <TableCell>{take.comments}</TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </section>
+
+   
     </div>
   );
 }
