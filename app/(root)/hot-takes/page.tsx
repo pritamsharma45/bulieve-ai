@@ -1,22 +1,28 @@
-
-import prisma from "../../lib/db";
+import prisma from "@/app/lib/db";
+import {NewsCard} from "./components/newsCard";
 
 import { unstable_noStore as noStore } from "next/cache";
 
-async function getData(searchParam: string) {
+async function getData() {
   noStore();
-
+  const data = await prisma.processed_macro_economy_articles.findMany({
+    select: {
+      title: true,
+      link: true,
+      summary: true,
+      published_at: true,
+ 
+    },
+  });
+  return data;
 }
 
-export default function News({
-  searchParams,
-}: {
-  searchParams: { page: string };
-}) {
+export default async function News() {
+  const allNewsItems = await getData();
+
   return (
-    <div className="max-w-[1000px] mx-auto flex gap-x-10 mt-4 mb-10">
- This page is for Hot Takes
+    <div className="mx-auto flex gap-x-10 mt-4 mb-10">
+     <NewsCard newsItems={allNewsItems} />
     </div>
   );
 }
-
