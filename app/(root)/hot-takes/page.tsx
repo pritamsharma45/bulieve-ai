@@ -42,7 +42,7 @@ export default async function News() {
   return (
     <div className="mx-auto flex gap-x-10 mt-4 mb-10">
      
-     
+     <div className="w-full">
      <Table>
      <TableCaption>All the HOT Takes Today!</TableCaption>
       <TableHeader>
@@ -62,7 +62,9 @@ export default async function News() {
       </TableRow>
       </TableBody>
       </Table>
-
+     </div>
+     
+     <div className="w-full">
       <Carousel className="w-full max-w-xs">
       <CarouselContent>
         {Array.from({ length: 5 }).map((_, index) => (
@@ -80,7 +82,7 @@ export default async function News() {
       <CarouselPrevious />
       <CarouselNext />
     </Carousel>
-
+    </div>
     </div>
   );
 }
