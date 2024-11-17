@@ -86,7 +86,7 @@ export default function RootLayout({
             <div className="flex flex-row items-center p-2">
             <Image src={pfp} alt="pfp" className="w-8" />
             <span  className="ml-4">
-              BULIEVE.AI
+              BULIEVE AI
             </span>
             </div>
             <div className="flex flex-1 flex-col gap-4 p-4">{children}</div>
