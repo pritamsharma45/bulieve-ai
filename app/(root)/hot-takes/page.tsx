@@ -1,9 +1,19 @@
-import React from 'react';
-import { unstable_noStore as noStore } from "next/cache";
 import prisma from "@/app/lib/db";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+
+
+import { unstable_noStore as noStore } from "next/cache";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import HotTakesBanner from "./components/hottakesbanner";
-import { MessageSquare, ThumbsUp } from 'lucide-react';
+import {
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table"
+
 import {
   Carousel,
   CarouselContent,
@@ -11,6 +21,7 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel"
+import { MessageSquare, ThumbsUp } from "lucide-react";
 
 // Dummy data for hot takes
 const hotTakes = [
@@ -55,18 +66,8 @@ const carouselItems = [
   }
 ];
 
-async function getData() {
-  noStore();
-  const data = await prisma.processed_macro_economy_articles.findMany({
-    select: {
-      title: true,
-      link: true,
-      summary: true,
-      published_at: true,
-    },
-  });
-  return data;
-}
+
+
 
 const HotTakesWall = () => (
   <div className="w-full">
@@ -96,18 +97,31 @@ const HotTakesWall = () => (
   </div>
 );
 
+async function getData() {
+  noStore();
+  const data = await prisma.processed_macro_economy_articles.findMany({
+    select: {
+      title: true,
+      link: true,
+      summary: true,
+      published_at: true,
+    },
+  });
+  return data;
+}
+
 export default async function News() {
   const allNewsItems = await getData();
 
   return (
-    <div className="container mx-auto px-4 py-6 space-y-8">
+    <div className="container mx-auto px-4 py-6 space-y-6">
       {/* Banner Section */}
       <section className="w-full">
         <HotTakesBanner />
       </section>
 
-      {/* Carousel Section */}
-      <section className="w-full flex justify-center">
+         {/* Carousel Section */}
+         <section className="w-full flex justify-center">
         <Carousel className="w-full max-w-2xl">
           <CarouselContent>
             {carouselItems.map((item, index) => (
@@ -138,10 +152,34 @@ export default async function News() {
         </Carousel>
       </section>
 
-      {/* Hot Takes Wall Section */}
+      {/* Table Section */}
+      <section className="w-full overflow-x-auto">
+        <Table>
+          <TableCaption>All the HOT Takes Today!</TableCaption>
+          <TableHeader>
+            <TableRow>
+              <TableHead className="w-[250px]">Post</TableHead>
+              <TableHead>User</TableHead>
+              <TableHead>Likes</TableHead>
+              <TableHead>Comments</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {hotTakes.map((take, index) => (
+              <TableRow key={index}>
+                <TableCell className="font-medium">{take.post}</TableCell>
+                <TableCell>{take.user}</TableCell>
+                <TableCell>{take.likes}</TableCell>
+                <TableCell>{take.comments}</TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </section>
       <section className="w-full">
         <HotTakesWall />
       </section>
+   
     </div>
   );
 }
