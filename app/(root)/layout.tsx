@@ -45,7 +45,7 @@ const data = {
     },
     {
       name: "Teams",
-      url: "/groups",
+      url: "/teams",
       icon: Group,
     },
     {
