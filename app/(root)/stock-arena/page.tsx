@@ -68,7 +68,7 @@ async function getData(searchParam: string) {
     // Get all the communities the user is a member of to display in the sidebar
     prisma.membership.findMany({
       where: {
-        userId: user.id,
+        userId: user?.id,
       },
       select: {
         community:{
@@ -119,34 +119,6 @@ export default function Home({
         </Suspense>
       </div>
       <div className="w-[35%] flex flex-col">
-        {/* <Card>
-          <Image src={Banner} alt="Banner" />
-          <div className="p-2">
-            <div className="flex items-center">
-              <Image
-                src={HelloImage}
-                alt="Hello Image"
-                className="w-10 h-16 -mt-6"
-              />
-              <h1 className="font-medium pl-3">Home</h1>
-            </div>
-            <p className="text-sm text-muted-foreground pt-2">
-              Your Home Stock Arena frontpage. Come here to check in with your
-              favorite communites!
-            </p>
-            <Separator className="my-5" />
-
-            <div className="flex flex-col gap-y-3">
-              <Button asChild variant="secondary">
-        
-                <Link href="/stock-arena/create-post">Create Post</Link>
-              </Button>
-              <Button asChild>
-                <Link href="/stock-arena/create-community">Create Community</Link>
-              </Button>
-            </div>
-          </div>
-        </Card> */}
         <Card className="mt-2">
         <Suspense fallback={<SuspenseCard />}>
           <ShowCommunities />

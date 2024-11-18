@@ -6,12 +6,14 @@ import { ScrollArea } from "@/components/ui/scroll-area"
 import { Separator } from "@/components/ui/separator"
 import { Bot, Clock, TrendingUp } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import NewsArenaBaaner from "./newsarenabanner";
 
 interface NewsItem {
   link: string;
   title: string;
   summary: string | null;
   published_at: Date | null;
+  showingFull?: boolean;
 }
 
 interface NewsData {
@@ -27,17 +29,22 @@ export function NewsCard({ newsItems }: { newsItems: NewsItem[] }) {
   }
 
   const [selectedNews, setSelectedNews] = useState(newsData.items[0])
+  // handleReadMoreClicked and add property to selected news showingFull 
+
+  const handleReadMoreClicked = () => {
+    setSelectedNews({ ...selectedNews, showingFull: true });
+  }
 
   return (
     <div className="mx-auto p-2">
-      <h1 className="text-3xl font-bold mb-6">{newsData.title}</h1>
-      <div className="flex flex-col-reverse md:flex-row gap-6"
+     <NewsArenaBaaner/>
+      <div className="flex flex-col md:flex-row gap-6"
 >
         <div className="md:w-1/3">
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center">
-                <TrendingUp className="mr-2" />
+                <TrendingUp className="mr-2 text-sm" />
                 Trending News
               </CardTitle>
             </CardHeader>
@@ -82,7 +89,16 @@ export function NewsCard({ newsItems }: { newsItems: NewsItem[] }) {
             <CardContent>
               <div className="bg-orange-50 dark:bg-orange-950 p-4 rounded-lg mb-4">
                 <p className="text-orange-800 dark:text-orange-200">
-                  {selectedNews.summary || "No summary available"}
+                  {selectedNews.summary && !selectedNews.showingFull && selectedNews.summary.split(' ').length > 50 ? (
+                    <>
+                      {selectedNews.summary.split(' ').slice(0, 50).join(' ')}...
+                      <Button variant="link" onClick={() => handleReadMoreClicked()}>
+                        Read more
+                      </Button>
+                    </>
+                  ) : (
+                    selectedNews.summary || "No summary available"
+                  )}
                 </p>
               </div>
               <div className="flex items-center text-sm text-muted-foreground mb-4">

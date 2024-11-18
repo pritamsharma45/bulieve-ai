@@ -18,27 +18,15 @@ export async function CreatePostCard({ communitySlug }: { communitySlug?: string
 
 
   return (
-    <Card className="px-2 py-2 flex items-center gap-x-2">
-      <Link href={createURL} className="w-full">
-        <Input placeholder="Create your post" className="text-xs" />
-      </Link>
-
-      <div className="flex items-center gap-x-2">
-        <Button variant="outline" size="icon" asChild>
+    <Card className="px-2 py-2 flex justify-between gap-x-2">
+      <Button asChild className="text-xs w-1/2" >
           <Link href={createURL}>
-            <ImageDown className="w-4 h-4" />
+            Create Post
           </Link>
         </Button>
-
-        <Button variant="outline" size="icon">
-          <Link href={createURL}>
-            <Link2 className="w-4 h-4" />
-          </Link>
-        </Button>
-        <Button asChild className="text-xs" >
+        <Button asChild className="text-xs w-1/2" >
                 <Link href="/stock-arena/create-community">Create Community</Link>
         </Button>
-      </div>
     </Card>
   );
 }

@@ -8,12 +8,14 @@ import prisma from "@/app/lib/db";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { Cake, MessageCircle } from "lucide-react";
+import { Cake,ThumbsUp, MessageCircle } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { unstable_noStore as noStore } from "next/cache";
 import BackButton from "@/app/components/BackButton";
+import { handleLike } from "@/app/actions";
+
 
 async function getData(id: string) {
   noStore();
@@ -60,6 +62,13 @@ async function getData(id: string) {
           userName: true,
         },
       },
+      Like: {
+        select: {
+          userId: true,
+          likeType: true,
+          postId: true,
+        },
+      },
     },
   });
 
@@ -72,6 +81,11 @@ async function getData(id: string) {
 
 export default async function PostPage({ params }: { params: { id: string } }) {
   const data = await getData(params.id);
+  const postID = params.id;
+  const likeCount = data.Like.reduce((acc, like) => {
+    if (like.likeType === "LIKE") return acc + 1;
+    return acc;
+  }, 0)
 
   return (
 <div>
@@ -83,7 +97,7 @@ export default async function PostPage({ params }: { params: { id: string } }) {
 
       <div className="w-[70%] flex flex-col gap-y-5">
         <Card className="p-2 flex">
-          <div className="flex flex-col  items-center  gap-y-2  p-2">
+          {/* <div className="flex flex-col  items-center  gap-y-2  p-2">
             <form action={handleVote}>
               <input type="hidden" name="voteDirection" value="UP" />
               <input type="hidden" name="postId" value={data.id} />
@@ -100,7 +114,7 @@ export default async function PostPage({ params }: { params: { id: string } }) {
               <input type="hidden" name="postId" value={data.id} />
               <DownVote />
             </form>
-          </div>
+          </div> */}
 
           <div className="p-2 w-full">
             <p className="text-xs text-muted-foreground">
@@ -123,6 +137,16 @@ export default async function PostPage({ params }: { params: { id: string } }) {
 
             <div className="flex gap-x-5 items-center mt-3">
               <div className="flex items-center gap-x-1">
+              <form action={handleLike}>
+            <input type="hidden" name="likeDirection" value="LIKE" />
+            <input type="hidden" name="postId" value={postID} />
+            <Button variant="ghost" type="submit" className="flex items-center gap-x-1">
+              <ThumbsUp className="h-4 w-4 text-muted-foreground" />
+              <span className="text-muted-foreground font-medium text-xs">
+                {likeCount}
+              </span>
+            </Button>
+          </form>
                 <MessageCircle className="h-4 w-4 text-muted-foreground" />
                 <p className="text-muted-foreground font-medium text-xs">
                   {data.Comment.length} Comments

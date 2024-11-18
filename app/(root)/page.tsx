@@ -74,7 +74,7 @@ export default async function Home({
         
             <div className="flex flex-col gap-y-3">
               <Button asChild variant="secondary">
-                <Link href="/stock-arena//create-post">Create Post</Link>
+                <Link href="/stock-arena/create-post">Create Post</Link>
               </Button>
               <Button asChild>
                 <Link href="/stock-arena/create-community">Create Community</Link>
@@ -91,13 +91,13 @@ async function ShowItems({ searchParams }: { searchParams: { page: string } }) {
   const { count, data } = await getData(searchParams.page);
   return (
     <>
-      {data?.map((post,i) => (
+      {data?.map((post) => (
         <PostCard
           id={post.id}
           imageString={post.imageString}
           jsonContent={post.textContent}
           title={post.title}
-          key={i}
+          key={post.id}
           commentAmount={post.Comment.length}
           userName={post.User?.userName as string}
           likeCount={post.Like.reduce((acc, like) => {
